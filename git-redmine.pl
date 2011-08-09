@@ -6,31 +6,26 @@ use strict;
 use warnings;
 use LWP::UserAgent;
 use Getopt::Long;
-use File::Temp qw/tempfile tempdir/;
 use URI;
 use URI::Escape;
-use File::HomeDir;
-use Path::Class;
 use JSON::Syck;
 use Text::ASCIITable;
 
-my $GIT_CONFIG = do {
-    my $fh = file(File::HomeDir->my_home,'.gitconfig')->openr;
+my $API_KEY = do {
 
-    my $data = {};
-    my $title;
-    for my $row ( <$fh> ) {
-        chomp $row;
+    open( my $popen, "git config redmine.apiKey|");
+    my $row = <$popen>;
+    chomp $row;
 
-        if( $row =~ /^\[(.+)\]$/ ) {
-            $title = $1;
-        }
-        elsif( $row =~ /^[\s\t]+(.*?)\s*=\s*(.+)$/ ) {
-            $data->{$title}->{$1} = $2;
-        }
+    unless( $row ) {
+        print "Please configure Redmine API key using:\n"
+        print " git config --global redmine.apiKey '<your api key>'\n"
+        exit();
     }
 
-    $data;
+    close($popen);
+
+    Encode::decode('utf8',$row);
 };
 
 sub get_issue {
