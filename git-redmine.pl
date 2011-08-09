@@ -10,10 +10,11 @@ use URI;
 use URI::Escape;
 use JSON::Syck;
 use Text::ASCIITable;
+use Encode;
 
 my $API_KEY = do {
 
-    open( my $popen, "git config redmine.apiKey|") or $!;
+    open( my $popen, "git config redmine.apiKey|") or die $!;
     my $row = <$popen>;
     chomp $row;
 
@@ -30,7 +31,7 @@ my $API_KEY = do {
 
 my $PROJECT_URL = do {
 
-    open( my $popen, "git config redmine.projectUrl|") or $!;
+    open( my $popen, "git config redmine.projectUrl|") or die $!;
     my $row = <$popen>;
     chomp $row;
 
