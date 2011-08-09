@@ -64,6 +64,8 @@ sub get_issue {
 
     my $content = $res->decoded_content;
 
+    local $YAML::Syck::ImplicitUnicode = 1;
+
     return JSON::Syck::Load($content);
 }
 
