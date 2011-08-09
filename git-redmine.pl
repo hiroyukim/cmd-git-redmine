@@ -18,8 +18,25 @@ my $API_KEY = do {
     chomp $row;
 
     unless( $row ) {
-        print "Please configure Redmine API key using:\n"
-        print " git config --global redmine.apiKey '<your api key>'\n"
+        print "Please configure Redmine API key using:\n";
+        print " git config --global redmine.apiKey '<your api key>'\n";
+        exit();
+    }
+
+    close($popen);
+
+    Encode::decode('utf8',$row);
+};
+
+my $PROJECT_URL = do {
+
+    open( my $popen, "git config redmine.projectUrl|") or $!;
+    my $row = <$popen>;
+    chomp $row;
+
+    unless( $row ) {
+        print "Please configure Redmine URL of the project using:\n";
+        print " git config redmine.projectUrl '<project url>'\n";
         exit();
     }
 
