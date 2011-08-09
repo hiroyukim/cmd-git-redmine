@@ -1,7 +1,8 @@
 #!/usr/bin/env perl
 # see 
 # git clone git://github.com/coiled-coil/git-redmine.git
-# http://yumewaza.yumemi.co.jp/2011/08/git-redmine-integration-using-rest-api-python.html
+# http://www.redmine.org/projects/redmine/wiki/Rest_Issues
+# http://www.redmine.org/projects/redmine/wiki/Rest_Issues#Creating-an-issue
 use strict;
 use warnings;
 use LWP::UserAgent;
@@ -49,18 +50,22 @@ my $PROJECT_URL = do {
 sub get_issue {
     my ($uri,$id) = @_;
 
-    my $url = sprintf("http://%s/%s/issues/%d.json?key=%s",
-        $uri->host,
-        $uri->path,
-        $id,
-        $API_KEY,
+    my $issues_uri = URI->new;
+    $issues_uri->scheme($uri->scheme);
+    $issues_uri->host($uri->host);
+    $issues_uri->path('issues.json');
+    $issues_uri->query_form(
+        key       => $API_KEY,
+        status_id => $id,
     );
+
+    my $url = $issues_uri->as_string;
 
     my $ua  = LWP::UserAgent->new(agent => 'git-redmine.pl');
     my $res =$ua->get( $url );
 
     unless( $res->is_success ) {
-        die $res->status_line;
+        die $res->status_line . ' ' . $url;
     }
 
     my $content = $res->decoded_content;
