@@ -19,7 +19,7 @@ my $GIT_CONFIG = do {
 
     my $data = {};
     my $title;
-    for my $row ( <DATA> ) {
+    for my $row ( <$fh> ) {
         chomp $row;
 
         if( $row =~ /^\[(.+)\]$/ ) {
