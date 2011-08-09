@@ -9,7 +9,7 @@ use LWP::UserAgent;
 use Getopt::Long;
 use URI;
 use URI::Escape;
-use JSON::Syck;
+use JSON::XS;
 use Text::ASCIITable;
 use Encode;
 
@@ -56,7 +56,6 @@ sub get_issue {
     $issues_uri->path('issues.json');
     $issues_uri->query_form(
         key       => $API_KEY,
-        status_id => $id,
     );
 
     my $url = $issues_uri->as_string;
@@ -70,9 +69,7 @@ sub get_issue {
 
     my $content = $res->decoded_content;
 
-    local $YAML::Syck::ImplicitUnicode = 1;
-
-    return JSON::Syck::Load($content);
+    return JSON::XS->new->utf8(0)->decode($content);
 }
 
 sub run {
