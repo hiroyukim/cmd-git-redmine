@@ -13,7 +13,7 @@ use Text::ASCIITable;
 
 my $API_KEY = do {
 
-    open( my $popen, "git config redmine.apiKey|");
+    open( my $popen, "git config redmine.apiKey|") or $!;
     my $row = <$popen>;
     chomp $row;
 
